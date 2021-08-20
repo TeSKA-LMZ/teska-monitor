@@ -1,4 +1,5 @@
 import psutil
+from teska_monitor import db
 
  #output = {"cpu_usage": telper, "Virtueller Ram": telmem}
 
@@ -14,12 +15,20 @@ def get_virtual_memory(option = "percent"):
     return value
 
 
-def get_all():
+def get_all(save=False, **kwargs):
+    """Returns the current telemetry data
+    :param save: If True, the telemetry data will be written into the database 
+    :param kwargs: Additional params sent to db
+    """
     output = {
        "cpu_usage": get_cpu_percent(),
        "total_memory": get_virtual_memory(option= "total"),
        "virtual_memory": get_virtual_memory()
     }
+
+    # save if needed
+    if save:
+        db.save(**kwargs, **output)
 
     return output    
 
