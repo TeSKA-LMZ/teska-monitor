@@ -2,4 +2,4 @@ requests
 psutil
 flask
 fire
-dateutil
+python-dateutil
