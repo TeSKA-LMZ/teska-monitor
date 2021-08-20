@@ -1,5 +1,5 @@
 from flask import Flask
-from teska_monitor import telemetry
+import telemetry
 
 app = Flask(__name__)
 
