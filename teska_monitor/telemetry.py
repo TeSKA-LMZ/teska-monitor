@@ -14,11 +14,18 @@ def get_virtual_memory(option = "percent"):
     return value
 
 
+def get_disk_usage(option = "percent"):
+    disk = psutil.disk_usage("/")
+    value = getattr(disk, option)
+    return value    
+
+
 def get_all():
     output = {
        "cpu_usage": get_cpu_percent(),
        "total_memory": get_virtual_memory(option= "total"),
-       "virtual_memory": get_virtual_memory()
+       "virtual_memory": get_virtual_memory(),
+       "disk_usage": get_disk_usage()
     }
 
     return output    
