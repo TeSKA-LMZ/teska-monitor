@@ -1,5 +1,5 @@
 from flask import Flask
-import telemetry
+from teska_monitor import telemetry
 
 app = Flask(__name__)
 
@@ -9,6 +9,7 @@ TEMPLATE ="""
 <p><strong>CPU Nutzung: </strong>{cpu}%</p>
 <p><strong>Virtual Memory: </strong>{mem}%</p>
 <p><strong>Total Memory: </strong>{total} GB</p>
+<p><strong>Disk Usage: </strong>{disk} %</p>
 """
 
 @app.route("/")
@@ -25,7 +26,12 @@ def index():
     total = data["total_memory"]
     total_gb = round(total / 1024 / 1024 / 1024, 2)
     
-    return TEMPLATE.format(cpu=data["cpu_usage"], mem=data["virtual_memory"], total=total_gb)
+    return TEMPLATE.format(
+        cpu=data["cpu_usage"], 
+        mem=data["virtual_memory"], 
+        total=total_gb, 
+        disk=data["disk_usage"]
+    )
 
 
 @app.route("/json")
