@@ -7,12 +7,13 @@ app = Flask(__name__)
 
 TEMPLATE ="""
 <h1>Monitoring</h1>
-<p><strong>CPU Nutzung: </strong>{cpu}%</p>
-<p><strong>CPU Temperatur: </strong>{temp}°C</p>
-<p><strong>Virtual Memory: </strong>{mem}%</p>
-<p><strong>Total Memory: </strong>{total} GB</p>
-<p><strong>Disk Usage: </strong>{disk} %</p>
 <p><strong>Boot Time: </strong>{time} </p>
+<p><strong>CPU Temperature: </strong>{temp}°C</p>
+<p><strong>CPU Usage: </strong>{cpu}%</p>
+<p><strong>Disk Usage: </strong>{disk} %</p>
+<p><strong>Total Memory: </strong>{total} GB</p>
+<p><strong>Virtual Memory: </strong>{mem}%</p>
+
 """
 
 @app.route("/")

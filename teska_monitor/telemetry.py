@@ -8,10 +8,9 @@ def get_cpu_percent():
     return pct
 
 
-def get_cpu_temp():  
-    temp = psutil.sensors_temperatures()
-    #value = getattr(temp, option)
-    return temp
+def get_cpu_temp():
+    temp = psutil.sensors_temperatures()["coretemp"][0]
+    return (temp.current)
 
 
 def get_virtual_memory(option = "percent"):
