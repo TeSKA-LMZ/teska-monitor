@@ -43,7 +43,7 @@ def get_all(save=False, **kwargs):
        "total_memory": get_virtual_memory(option= "total"),
        "virtual_memory": get_virtual_memory(),
        "disk_usage": get_disk_usage(),
-       "boot_time": get_boot_time()
+       #"boot_time": get_boot_time()
     }
 
     # save if needed

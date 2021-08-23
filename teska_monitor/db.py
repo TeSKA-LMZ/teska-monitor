@@ -139,7 +139,7 @@ def read(connection='data.db', provider=None, since=None, start=None, end=None, 
     Read the connected database by specifieing several filter options.
     :param connection: sqlite filename or database connection string
     :param provider: if given, filter by the given provider
-    :param since: if given, filter by the given datetime
+    :param since: if given, include only Telemetry newer than given seconds
     :param start: if given, do not include telemetry before this date
     :param end: if given, do not include telemetry after this date
     :param as_dict: if True, return dictionaries, else Model instances

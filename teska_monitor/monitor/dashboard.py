@@ -15,6 +15,7 @@ import plotly.graph_objects as go
 import pandas as pd
 
 from teska_monitor import telemetry
+from teska_monitor.db import read
 
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -42,6 +43,10 @@ app.layout = html.Div(children=[
 
 
     html.Pre(html.Code("waiting for data", id = "output")),
+
+    dcc.Graph(
+        id='history-graph'
+    ),
 
     dcc.Graph(
         id='example-graph',
@@ -76,6 +81,28 @@ def update_output_div(input_value):
 
 
     return 'Output: {}'.format(data), fig, figs
+
+@app.callback(
+    Output(component_id="history-graph", component_property= 'figure'),
+    Input(component_id= 'refresh-button', component_property='n_clicks')
+)
+def update_history_graph(input_value):
+    data = read()
+
+    x = []
+    y = []
+
+    for d in data:
+        x.append(d["dtime"])
+
+    for d in data:
+        y.append(d["cpu_usage"])    
+
+    fig = go.Figure(data=go.Scatter(x=x, y=y))
+    return fig
+
+
+
 
 
 
