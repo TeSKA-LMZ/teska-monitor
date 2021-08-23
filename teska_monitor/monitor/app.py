@@ -1,3 +1,4 @@
+from datetime import time
 from flask import Flask
 from teska_monitor import telemetry
 
@@ -6,9 +7,13 @@ app = Flask(__name__)
 
 TEMPLATE ="""
 <h1>Monitoring</h1>
-<p><strong>CPU Nutzung: </strong>{cpu}%</p>
-<p><strong>Virtual Memory: </strong>{mem}%</p>
+<p><strong>Boot Time: </strong>{time} </p>
+<p><strong>CPU Temperature: </strong>{temp}°C</p>
+<p><strong>CPU Usage: </strong>{cpu}%</p>
+<p><strong>Disk Usage: </strong>{disk} %</p>
 <p><strong>Total Memory: </strong>{total} GB</p>
+<p><strong>Virtual Memory: </strong>{mem}%</p>
+
 """
 
 @app.route("/")
@@ -25,7 +30,14 @@ def index():
     total = data["total_memory"]
     total_gb = round(total / 1024 / 1024 / 1024, 2)
     
-    return TEMPLATE.format(cpu=data["cpu_usage"], mem=data["virtual_memory"], total=total_gb)
+    return TEMPLATE.format(
+        cpu=data["cpu_usage"],
+        temp=data["cpu_temperature"], 
+        mem=data["virtual_memory"], 
+        total=total_gb, 
+        disk=data["disk_usage"],
+        time=data["boot_time"]
+    )
 
 
 @app.route("/json")
