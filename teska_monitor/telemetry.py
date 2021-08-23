@@ -30,9 +30,6 @@ def get_boot_time():
     time = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
     return time
 
-datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
-'2014-01-12 22:51:00'    
-
 
 def get_all():
     output = {
