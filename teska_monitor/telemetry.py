@@ -1,6 +1,6 @@
 import psutil
+from teska_monitor import db
 import datetime
- #output = {"cpu_usage": telper, "Virtueller Ram": telmem}
 
 
 def get_cpu_percent():
@@ -30,11 +30,13 @@ def get_boot_time():
     time = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
     return time
 
-datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
-'2014-01-12 22:51:00'    
 
-
-def get_all():
+def get_all(save=False, **kwargs):
+    """Returns the current telemetry data
+    :param save: If True, the telemetry data will be written into the database 
+    :param kwargs: Additional params sent to db
+    """
+    
     output = {
        "cpu_usage": get_cpu_percent(),
        "cpu_temperature": get_cpu_temp(),
@@ -43,6 +45,10 @@ def get_all():
        "disk_usage": get_disk_usage(),
        "boot_time": get_boot_time()
     }
+
+    # save if needed
+    if save:
+        db.save(**kwargs, **output)
 
     return output    
 
