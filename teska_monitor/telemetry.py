@@ -1,5 +1,5 @@
 import psutil
-import datetime
+from datetime import datetime as dt
  #output = {"cpu_usage": telper, "Virtueller Ram": telmem}
 
 
@@ -27,11 +27,11 @@ def get_disk_usage(option = "percent"):
 
 
 def get_boot_time():
-    time = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+    time = dt.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
     return time
 
-datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
-'2014-01-12 22:51:00'    
+# datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+# '2014-01-12 22:51:00'    
 
 
 def get_all():
