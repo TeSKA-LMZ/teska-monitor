@@ -160,6 +160,7 @@ def update_output_div(input_value):
 
     return 'Output: {}'.format(data), fig, figs
 
+
 @app.callback(
     Output(component_id="history-graph", component_property= 'figure'),
     Input(component_id= 'refresh-button', component_property='n_clicks')
@@ -179,17 +180,6 @@ def update_history_graph(input_value):
     fig = go.Figure(data=go.Scatter(x=x, y=y))
     return fig
 
-
-
-
-
-
-
-
-# labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
-# values = [4500, 2500, 1053, 500]
-
-# fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
