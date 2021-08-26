@@ -9,6 +9,7 @@ from psutil import cpu_count, virtual_memory
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
@@ -18,44 +19,53 @@ from teska_monitor import telemetry
 from teska_monitor.db import read
 
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = [
+#    'https://codepen.io/chriddyp/pen/bWLwgP.css',
+    dbc.themes.BOOTSTRAP
+]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-# assume you have a "long-form" data frame
-# see https://plotly.com/python/px-arguments/ for more options
-# df = pd.DataFrame({
-#     "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
-#     "Amount": [4, 1, 2, 2, 4, 5],
-#     "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
-# })
+# build a Navigation bar
+navbar = dbc.Navbar(
+    [
+        dbc.Row([
+            dbc.Col(dbc.NavbarBrand("TeSKA Monitor", className="ml-3"))
+        ]),
+    ],
+    color="dark",
+    dark=True
+)
 
 
-#fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
+app.layout = dbc.Container(
+    children=[
+        # html.H1(children='Monitoring Dashboard'),
 
-app.layout = html.Div(children=[
-    html.H1(children='Monitoring Dashboard'),
-
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-    html.Button("Refresh", id = "refresh-button"),
+        # html.Div(children='''
+        #     Dash: A web application framework for Python.
+        # '''),
+        navbar,
+        html.Button("Refresh", id = "refresh-button"),
 
 
-    html.Pre(html.Code("waiting for data", id = "output")),
+        html.Pre(html.Code("waiting for data", id = "output")),
 
-    dcc.Graph(
-        id='history-graph'
-    ),
+        dcc.Graph(
+            id='history-graph'
+        ),
 
-    dcc.Graph(
-        id='example-graph',
-    ),
+        dcc.Graph(
+            id='example-graph',
+        ),
 
-    dcc.Graph(
-        id='bullet-graph',
-    )
-])
+        dcc.Graph(
+            id='bullet-graph',
+        )
+    ],
+    fluid=True,
+    className="p-0 m-0"
+)
 @app.callback(
     Output(component_id='output', component_property='children'),
     Output(component_id= 'example-graph', component_property='figure'),
