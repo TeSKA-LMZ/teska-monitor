@@ -9,6 +9,7 @@ from psutil import cpu_count, virtual_memory
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
@@ -18,44 +19,121 @@ from teska_monitor import telemetry
 from teska_monitor.db import read
 
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = [
+#    'https://codepen.io/chriddyp/pen/bWLwgP.css',
+    dbc.themes.BOOTSTRAP
+]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-# assume you have a "long-form" data frame
-# see https://plotly.com/python/px-arguments/ for more options
-# df = pd.DataFrame({
-#     "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
-#     "Amount": [4, 1, 2, 2, 4, 5],
-#     "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
-# })
+# build a Navigation bar
+navbar = dbc.Navbar(
+    [
+        dbc.Row(
+            [
+                dbc.Col(dbc.NavbarBrand("TeSKA Monitor", className="ml-3")),
+                dbc.NavLink(dbc.Button('Refresh', id='refresh-button', color='link'))
+            ],
+            style={'justify-content': 'space-between', 'width': '100%'},
+            align='center'
+        ),
+    ],
+    color="dark",
+    dark=True
+)
+
+# GENERAL LAYOUT
+app.layout = dbc.Container(
+    children=[
+        # html.H1(children='Monitoring Dashboard'),
+
+        # html.Div(children='''
+        #     Dash: A web application framework for Python.
+        # '''),
+        navbar,
+
+        # --> dev only
+        # html.Button("Refresh", id = "refresh-button"),
+        html.Code("waiting for data", id = "output"),
+        # <--
+
+        # TOP ROW 
+        # use for current data, filled by telemetry.get_all callback
+        dbc.Row([
+            dbc.Col(
+                dcc.Graph(
+                    id='example-graph',
+                ),
+                sm=12,
+                md=6,
+                lg=3,
+            ),
+            dbc.Col(
+                dcc.Graph(
+                    id='bullet-graph',
+                ),
+                sm=12,
+                md=6,
+                lg=3
+            ),
+            # This id can be changed and the graph can be used
+            dbc.Col(
+                dcc.Graph(
+                    id='graph-3',
+                ),
+                sm=12,
+                md=6,
+                lg=3
+            ),
+            # This id can be changed and the graph can be used
+            dbc.Col(
+                dcc.Graph(
+                    id='graph-4',
+                ),
+                sm=12,
+                md=6,
+                lg=3
+            )
+        ], className="m-0"),
 
 
-#fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
+        # 'Historic' Data
+        # Append Rows for data filled by database read() callback(s)
+        
+        dbc.Row([
+            # this row always takes the full width
+            dbc.Col(
+                dcc.Graph(
+                    id='history-graph'
+                ),
+                sm=12
+            )
+        ], className="m-0"),
 
-app.layout = html.Div(children=[
-    html.H1(children='Monitoring Dashboard'),
+        # two graphs - uncomment to use it
+        dbc.Row([
+            dbc.Col(
+                dcc.Graph(
+                    id='graph-6'
+                ),
+                sm=12,
+                md=6
+            ),
+            dbc.Col(
+                dcc.Graph(
+                    id='graph-7'
+                ),
+                sm=12,
+                md=6
+            ),
+        ], className="m-0")
+    ],
+    fluid=True,
+    className="p-0 m-0"
+)
 
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-    html.Button("Refresh", id = "refresh-button"),
 
-
-    html.Pre(html.Code("waiting for data", id = "output")),
-
-    dcc.Graph(
-        id='history-graph'
-    ),
-
-    dcc.Graph(
-        id='example-graph',
-    ),
-
-    dcc.Graph(
-        id='bullet-graph',
-    )
-])
+# CALLBACK FUNCTIONS
 @app.callback(
     Output(component_id='output', component_property='children'),
     Output(component_id= 'example-graph', component_property='figure'),
@@ -82,6 +160,7 @@ def update_output_div(input_value):
 
     return 'Output: {}'.format(data), fig, figs
 
+
 @app.callback(
     Output(component_id="history-graph", component_property= 'figure'),
     Input(component_id= 'refresh-button', component_property='n_clicks')
@@ -101,17 +180,6 @@ def update_history_graph(input_value):
     fig = go.Figure(data=go.Scatter(x=x, y=y))
     return fig
 
-
-
-
-
-
-
-
-# labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
-# values = [4500, 2500, 1053, 500]
-
-# fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
