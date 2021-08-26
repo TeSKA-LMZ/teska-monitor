@@ -76,6 +76,7 @@ app.layout = dbc.Container(
                 md=6,
                 lg=3
             ),
+            # This id can be changed and the graph can be used
             dbc.Col(
                 dcc.Graph(
                     id='graph-3',
@@ -84,6 +85,7 @@ app.layout = dbc.Container(
                 md=6,
                 lg=3
             ),
+            # This id can be changed and the graph can be used
             dbc.Col(
                 dcc.Graph(
                     id='graph-4',
@@ -107,6 +109,24 @@ app.layout = dbc.Container(
                 sm=12
             )
         ], className="m-0"),
+
+        # two graphs - uncomment to use it
+        dbc.Row([
+            dbc.Col(
+                dcc.Graph(
+                    id='graph-6'
+                ),
+                sm=12,
+                md=6
+            ),
+            dbc.Col(
+                dcc.Graph(
+                    id='graph-7'
+                ),
+                sm=12,
+                md=6
+            ),
+        ], className="m-0")
     ],
     fluid=True,
     className="p-0 m-0"
