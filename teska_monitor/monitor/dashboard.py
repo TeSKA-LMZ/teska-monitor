@@ -29,15 +29,20 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 # build a Navigation bar
 navbar = dbc.Navbar(
     [
-        dbc.Row([
-            dbc.Col(dbc.NavbarBrand("TeSKA Monitor", className="ml-3"))
-        ]),
+        dbc.Row(
+            [
+                dbc.Col(dbc.NavbarBrand("TeSKA Monitor", className="ml-3")),
+                dbc.NavLink(dbc.Button('Refresh', id='refresh-button', color='link'))
+            ],
+            style={'justify-content': 'space-between', 'width': '100%'},
+            align='center'
+        ),
     ],
     color="dark",
     dark=True
 )
 
-
+# GENERAL LAYOUT
 app.layout = dbc.Container(
     children=[
         # html.H1(children='Monitoring Dashboard'),
@@ -46,26 +51,69 @@ app.layout = dbc.Container(
         #     Dash: A web application framework for Python.
         # '''),
         navbar,
-        html.Button("Refresh", id = "refresh-button"),
+
+        # --> dev only
+        # html.Button("Refresh", id = "refresh-button"),
+        html.Code("waiting for data", id = "output"),
+        # <--
+
+        # TOP ROW 
+        # use for current data, filled by telemetry.get_all callback
+        dbc.Row([
+            dbc.Col(
+                dcc.Graph(
+                    id='example-graph',
+                ),
+                sm=12,
+                md=6,
+                lg=3,
+            ),
+            dbc.Col(
+                dcc.Graph(
+                    id='bullet-graph',
+                ),
+                sm=12,
+                md=6,
+                lg=3
+            ),
+            dbc.Col(
+                dcc.Graph(
+                    id='graph-3',
+                ),
+                sm=12,
+                md=6,
+                lg=3
+            ),
+            dbc.Col(
+                dcc.Graph(
+                    id='graph-4',
+                ),
+                sm=12,
+                md=6,
+                lg=3
+            )
+        ], className="m-0"),
 
 
-        html.Pre(html.Code("waiting for data", id = "output")),
-
-        dcc.Graph(
-            id='history-graph'
-        ),
-
-        dcc.Graph(
-            id='example-graph',
-        ),
-
-        dcc.Graph(
-            id='bullet-graph',
-        )
+        # 'Historic' Data
+        # Append Rows for data filled by database read() callback(s)
+        
+        dbc.Row([
+            # this row always takes the full width
+            dbc.Col(
+                dcc.Graph(
+                    id='history-graph'
+                ),
+                sm=12
+            )
+        ], className="m-0"),
     ],
     fluid=True,
     className="p-0 m-0"
 )
+
+
+# CALLBACK FUNCTIONS
 @app.callback(
     Output(component_id='output', component_property='children'),
     Output(component_id= 'example-graph', component_property='figure'),
