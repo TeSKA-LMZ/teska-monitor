@@ -1,6 +1,7 @@
 import psutil
 from teska_monitor import db
 import datetime
+import time
 
 
 def get_cpu_percent():
@@ -53,10 +54,31 @@ def get_all(save=False, **kwargs):
     return output    
 
 
+def interval(seconds=900, verbose=True, **kwargs):
+    """Run the telemetry script at an interval.
+    Calls get_all with save flag auto-activated at a given interval.
+    This can be used to collect telemetry data on a client, as an 
+    alternative to a Cron-Job.
+    Usually, you want set the provider flag as well
+    :param seconds: Interval length in seconds
+    :param provider: Unique name of the client
+    :param kwargs: Additional params sent to db
+    """
+    while True:
+        # generate and save data
+        data = get_all(save=True, **kwargs)
+        if verbose:
+            print(data)
+        
+        # wait specified interval
+        time.sleep(seconds)
+
+
 if __name__=="__main__":
     import fire
     fire.Fire({
         "all": get_all,
+        "interval": interval,
         "cpu": get_cpu_percent,
         "mem": get_virtual_memory
     })
