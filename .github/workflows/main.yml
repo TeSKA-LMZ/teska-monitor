@@ -1,0 +1,30 @@
+name: Deploy to PyPI
+
+on:
+  create:
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.8
+      
+      - name: install Package
+        run: pip install -e .
+      
+      - name: Package module
+        run: python setup.py sdist
+        
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
