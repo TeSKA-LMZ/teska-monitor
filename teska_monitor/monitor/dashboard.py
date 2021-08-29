@@ -45,6 +45,10 @@ navbar = dbc.Navbar(
 # GENERAL LAYOUT
 app.layout = dbc.Container(
     children=[
+        dcc.Interval(
+            id='refresh-interval',
+            interval=1 * 60 * 1000   # interval is defined in Milliseconds
+        ),
         # html.H1(children='Monitoring Dashboard'),
 
         # html.Div(children='''
@@ -138,9 +142,10 @@ app.layout = dbc.Container(
     Output(component_id='output', component_property='children'),
     Output(component_id= 'example-graph', component_property='figure'),
     Output(component_id= 'bullet-graph', component_property= 'figure'),
-    Input(component_id= 'refresh-button', component_property='n_clicks')
+    Input(component_id= 'refresh-button', component_property='n_clicks'),
+    Input(component_id='refresh-interval', component_property='n_intervals'),
 )
-def update_output_div(input_value):
+def update_output_div(input_value, n_intervals):
     data = telemetry.get_all()
 
     fig = go.Figure(go.Indicator(
@@ -163,9 +168,10 @@ def update_output_div(input_value):
 
 @app.callback(
     Output(component_id="history-graph", component_property= 'figure'),
-    Input(component_id= 'refresh-button', component_property='n_clicks')
+    Input(component_id= 'refresh-button', component_property='n_clicks'),
+    Input(component_id='refresh-interval', component_property='n_intervals'),
 )
-def update_history_graph(input_value):
+def update_history_graph(input_value, n_intervals):
     data = read()
 
     x = []
