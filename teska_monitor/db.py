@@ -134,6 +134,19 @@ def save(connection='data.db', provider='localhost', dtime=dt.now, commit=True, 
         return telset
 
 
+def get_providers(connection='data.db'):
+    """Return a list of all providers that are currently available in the database.
+    :param connection: sqlite filename or database connection string
+    """
+    # first get a session
+    session = connect(connection=connection, mode='session')
+
+    # build the query
+    query = session.query(TelemetrySet.provider.distinct())
+
+    return [rec[0] for rec in query.all()]
+
+
 def read(connection='data.db', provider=None, since=None, start=None, end=None, as_dict=True):
     """Read telemetry data from the database
     Read the connected database by specifieing several filter options.
