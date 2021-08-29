@@ -10,13 +10,13 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 
 from teska_monitor import telemetry
-from teska_monitor.db import read
+from teska_monitor.db import read, get_providers
 
 
 external_stylesheets = [
@@ -41,6 +41,14 @@ navbar = dbc.Navbar(
     color="dark",
     dark=True
 )
+
+# Provider dropdown
+# Use this component as State, to pass through the current provider filter if any
+provider_dropdown = dcc.Dropdown(
+    id='provider',
+    options=[{'label': p, 'value': p} for p in get_providers()]
+)
+
 
 # GENERAL LAYOUT
 app.layout = dbc.Container(
@@ -99,7 +107,7 @@ app.layout = dbc.Container(
 
         # 'Historic' Data
         # Append Rows for data filled by database read() callback(s)
-        
+        provider_dropdown,
         dbc.Row([
             # this row always takes the full width
             dbc.Col(
@@ -163,10 +171,11 @@ def update_output_div(input_value):
 
 @app.callback(
     Output(component_id="history-graph", component_property= 'figure'),
-    Input(component_id= 'refresh-button', component_property='n_clicks')
+    Input(component_id= 'refresh-button', component_property='n_clicks'),
+    Input(component_id='provider', component_property='value')
 )
-def update_history_graph(input_value):
-    data = read()
+def update_history_graph(input_value, provider_name):
+    data = read(provider=provider_name)
 
     x = []
     y = []
@@ -178,6 +187,11 @@ def update_history_graph(input_value):
         y.append(d["cpu_usage"])    
 
     fig = go.Figure(data=go.Scatter(x=x, y=y))
+
+    fig.update_layout(dict(
+        title='CPU Usage%s' % (f': {provider_name}' if provider_name is not None else ': All')
+    ))
+
     return fig
 
 
